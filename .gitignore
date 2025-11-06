@@ -43,3 +43,7 @@ dist-ssr
 
 # System files
 Thumbs.db
+
+# Keep Docker configuration files
+!Dockerfile
+!docker-compose.yml

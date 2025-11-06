@@ -18,7 +18,7 @@ export interface IntakeFormRequestDto {
     additionalNotes: string;
 }
 
-export interface intakeFormResponseDto extends IntakeFormRequestDto {
+export interface IntakeFormResponseDto extends IntakeFormRequestDto {
     id: number;
     patientId: number;
     caseId: number;

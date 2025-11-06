@@ -1,0 +1,15 @@
+.footer {
+  @apply bg-white border-t border-gray-200 py-4;
+}
+
+.footer-container {
+  @apply max-w-7xl mx-auto px-6 flex justify-center items-center;
+}
+
+.footer-text {
+  @apply text-sm text-gray-600;
+}
+
+.footer-text span {
+  @apply text-primary font-semibold;
+}

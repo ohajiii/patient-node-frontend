@@ -70,7 +70,6 @@ const intakeFormValidationSchema = yup.object({
 type IntakeFormSchema = yup.InferType<typeof intakeFormValidationSchema>;
 
 export function useIntakeForm() {
-  // 👇 Use the inferred type from Yup
   const intakeForm = useForm<IntakeFormSchema>({
     resolver: yupResolver(intakeFormValidationSchema) as any,
   });

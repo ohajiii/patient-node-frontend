@@ -5,6 +5,9 @@ import Home from './pages/Home/Home'
 import PatientLayout from './layouts/PatientLayout'
 import IntakeForm from "./pages/Patient/IntakeForm/IntakeForm";
 
+import StaffLayout from "./layouts/StaffLayout";
+import CaseList from "./pages/Staff/Case/CaseList";
+
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +19,10 @@ function App() {
 
         <Route element={<PatientLayout />}>
           <Route path="/patient/intake-form" element={<IntakeForm />} />
+        </Route>
+
+        <Route element={<StaffLayout />}>
+          <Route path="/staff/cases" element={<CaseList />} />
         </Route>
 
       </Routes>

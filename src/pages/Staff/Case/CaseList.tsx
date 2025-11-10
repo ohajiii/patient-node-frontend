@@ -33,7 +33,9 @@ export default function CaseList() {
   async function handleStatusSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!selectedCaseId) return;
-    const payload: CaseStatusUpdateRequestDto = { status: newStatus as "OPEN" | "IN_PROGRESS" | "CLOSED" };
+    const payload: CaseStatusUpdateRequestDto = {
+      status: newStatus as "OPEN" | "IN_PROGRESS" | "CLOSED",
+    };
     await updateCaseStatus(selectedCaseId, payload);
     alert("Case status updated successfully!");
     setNewStatus("");
@@ -57,16 +59,18 @@ export default function CaseList() {
       <section className="case">
         <div className="case-container">
           <h1 className="case-title">Case Management</h1>
-          <p className="case-description">View and update patient cases below.</p>
+          <p className="case-description">
+            View and update patient cases below.
+          </p>
 
           {loading && <p className="case-loading">Loading cases...</p>}
           {error && <p className="case-error">{error}</p>}
 
-          {!loading && cases.length === 0 && (
+          {!loading && Array.isArray(cases) && cases.length === 0 && (
             <p className="case-empty">No cases found.</p>
           )}
 
-          {!loading && cases.length > 0 && (
+          {!loading && Array.isArray(cases) && cases.length > 0 && (
             <table className="case-table">
               <thead>
                 <tr>

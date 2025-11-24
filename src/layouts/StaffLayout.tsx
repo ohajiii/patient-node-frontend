@@ -1,15 +1,16 @@
 import { Outlet } from "react-router-dom";
 import StaffNavbar from "../components/StaffNavbar/StaffNavbar";
-
 import Footer from "../components/Footer/Footer";
 
 export default function StaffLayout() {
   return (
-    <div className="staff-layout">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <StaffNavbar />
-      <main className="staff-main">
+
+      <main className="flex-1 px-6 py-6">
         <Outlet />
       </main>
+
       <Footer />
     </div>
   );

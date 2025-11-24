@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import "./StaffNavbar.css";
 import logo from "../../assets/images/logo.svg";
 
 export default function StaffNavbar() {
   return (
-    <header className="staff-navbar">
-      <div className="staff-navbar-container">
-        <Link to="/staff/dashboard" className="staff-navbar-logo">
-          <img src={logo} alt="PatientNode logo" className="staff-navbar-logo-img" />
+    <header className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+        <Link to="/staff/dashboard">
+          <img src={logo} alt="PatientNode Logo" className="h-10 w-auto" />
         </Link>
 
-        <nav className="staff-navbar-links">
-          <Link to="/staff/dashboard">Dashboard</Link>
-          <Link to="/staff/cases">Cases</Link>
-          <Link to="/staff/patients">Patients</Link>
-          <Link to="/staff/reports">Reports</Link>
-          <Link to="/logout" className="staff-navbar-logout">Logout</Link>
+        <nav className="flex space-x-6">
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/staff/dashboard">Dashboard</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/staff/cases">Cases</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/staff/patients">Patients</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/staff/reports">Reports</Link>
+
+          <Link className="text-blue-600 font-semibold hover:underline" to="/logout">Logout</Link>
         </nav>
       </div>
     </header>

@@ -1,96 +1,55 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { createIntakeForm } from "../services/intakeFormService";
-import type { IntakeFormRequestDto } from "../types/intakeForm";
+import { useState } from "react";
+import { getIntakeFormById, getIntakeFormsByPatientId } from "../services/intakeFormService";
+import type { IntakeFormResponseDto } from "../types/intakeForm";
 
-const intakeFormValidationSchema = yup.object({
-    hasChronicIllness: yup.boolean().required(),
-    chronicIllnessDetails: yup.string().when("hasChronicIllness", {
-        is: true,
-        then: function (fieldSchema) {
-            return fieldSchema.required("Please describe the chronic illness");
-        },
-        otherwise: function (fieldSchema) {
-            return fieldSchema.optional();
-        },
-    }),
+function useIntakeForm() {
+  const [intakeForm, setIntakeForm] = useState<IntakeFormResponseDto | null>(null);
+  const [intakeForms, setIntakeForms] = useState<IntakeFormResponseDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    takesMedication: yup.boolean().required(),
-    medicationDetails: yup.string().when("takesMedication", {
-        is: true,
-        then: function (fieldSchema) {
-            return fieldSchema.required("Please describe yout medication");
-        },
-        otherwise: function (fieldSchema) {
-            return fieldSchema.optional();
-        },
-    }),
+  function fetchFormById(id: number) {
+    setLoading(true);
+    setErrorMessage(null);
 
-    hasAllergies: yup.boolean().required(),
-    allergyDetails: yup.string().when("hasAllergies", {
-        is: true,
-        then: function (fieldSchema) {
-            return fieldSchema.required("Please describe your allergies");
-        },
-        otherwise: function (fieldSchema) {
-            return fieldSchema.optional();
-        },
-    }),
+    getIntakeFormById(id)
+      .then(function(data) {
+        setIntakeForm(data);
+      })
+      .catch(function() {
+        setErrorMessage("Could not load intake form.");
+        setIntakeForm(null);
+      })
+      .finally(function() {
+        setLoading(false);
+      });
+  }
 
-    hasSurgeries: yup.boolean().required(),
-    surgeryDetails: yup.string().when("hasSurgeries", {
-        is: true,
-        then: function (fieldSchema) {
-            return fieldSchema.required("Please describe your surgeries");
-        },
-        otherwise: function (fieldSchema) {
-            return fieldSchema.optional();
-        },
-    }),
+  function fetchFormsByPatient(patientId: number) {
+    setLoading(true);
+    setErrorMessage(null);
 
-    smokes: yup.boolean().required(),
-
-    drinksAlcohol: yup.boolean().required(),
-    alcoholFrequency: yup.string().optional(),
-
-    exercisesRegularly: yup.boolean().required(),
-    exerciseFrequency: yup.string().optional(),
-
-    primaryComplaint: yup.string().required("Primary complaint is required"),
-
-    symptomStart: yup.string().required("Symptoms start date is required"),
-
-    symptomSeverity: yup.number().typeError("Symptom severity must be a number").required("Symptom severity is required").min(1).max(10),
-
-    additionalNotes: yup.string().optional(),
-
-}).required();
-
-type IntakeFormSchema = yup.InferType<typeof intakeFormValidationSchema>;
-
-export function useIntakeForm() {
-  const intakeForm = useForm<IntakeFormSchema>({
-    resolver: yupResolver(intakeFormValidationSchema) as any,
-  });
-
-  async function handleFormSubmission(formData: IntakeFormSchema) {
-    try {
-      await createIntakeForm(formData as IntakeFormRequestDto);
-      alert("Form submitted successfully!");
-      intakeForm.reset();
-    } 
-    catch (error) {
-      console.error(error);
-      alert("Something went wrong while submitting the form.");
-    }
+    getIntakeFormsByPatientId(patientId)
+      .then(function(data) {
+        setIntakeForms(data);
+      })
+      .catch(function() {
+        setErrorMessage("Could not load intake forms.");
+        setIntakeForms([]);
+      })
+      .finally(function() {
+        setLoading(false);
+      });
   }
 
   return {
-    register: intakeForm.register,
-    handleSubmit: intakeForm.handleSubmit,
-    formState: intakeForm.formState,
-    reset: intakeForm.reset,
-    handleFormSubmission,
+    intakeForm: intakeForm,
+    intakeForms: intakeForms,
+    loading: loading,
+    errorMessage: errorMessage,
+    fetchFormById: fetchFormById,
+    fetchFormsByPatient: fetchFormsByPatient
   };
 }
+
+export default useIntakeForm;

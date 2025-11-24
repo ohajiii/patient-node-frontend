@@ -1,240 +1,153 @@
-import "./IntakeForm.css";
-import { Helmet } from "react-helmet-async";
-import { useIntakeForm } from "../../../hooks/useIntakeForm";
+import { useState } from "react";
+import { createIntakeForm } from "../../../services/intakeFormService";
+import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 
 export default function IntakeForm() {
-  const {
-    register,
-    handleSubmit,
-    handleFormSubmission,
-    formState: { errors, isSubmitting },
-  } = useIntakeForm();
+
+  const [form, setForm] = useState({
+    hasChronicIllness: false,
+    chronicIllnessDetails: "",
+    takesMedication: false,
+    medicationDetails: "",
+    hasAllergies: false,
+    allergyDetails: "",
+    hasSurgeries: false,
+    surgeryDetails: "",
+    smokes: false,
+    drinksAlcohol: false,
+    alcoholFrequency: "",
+    exercisesRegularly: false,
+    exerciseFrequency: "",
+    primaryComplaint: "",
+    symptomStart: "",
+    symptomSeverity: 1,
+    additionalNotes: ""
+  });
+
+  const [successMessage, setSuccessMessage] = useState("");
+
+  function updateField(fieldName: string, value: any) {
+    setForm(function (prev) {
+      return {
+        ...prev,
+        [fieldName]: value
+      };
+    });
+  }
+
+  function submitForm(event: React.FormEvent) {
+    event.preventDefault();
+
+    const request: IntakeFormRequestDto = {
+      ...form
+    };
+
+    createIntakeForm(request)
+      .then(function () {
+        setSuccessMessage("Your intake form has been submitted successfully.");
+      })
+      .catch(function () {
+        alert("There was a problem submitting the form. Please try again.");
+      });
+  }
 
   return (
-    <>
-      <Helmet>
-        <title> Intake Form | PatientNode </title>
-      </Helmet>
+    <div className="max-w-3xl mx-auto">
 
-      <section className="intake">
-        <div className="intake-container">
-          <h1 className="intake-title"> Patient Intake Form </h1>
-          <p className="intake-description">
-            Please complete this form to provide your medical background and
-            current symptoms.
-          </p>
+      <h1 className="text-2xl font-semibold mb-6">Patient Intake Form</h1>
 
-          {/* Chromic illness */}
-          <form
-            className="intake-form"
-            onSubmit={handleSubmit(handleFormSubmission)}
-          >
-            <div className="intake-form-section">
-              <label className="intake-label">
-                Do you have a chronic illness?
-              </label>
+      {successMessage !== "" && (
+        <p className="text-green-600 mb-4">{successMessage}</p>
+      )}
 
-              <input type="checkbox" {...register("hasChronicIllness")} />
-              {errors.hasChronicIllness && (
-                <p className="intake-error">
-                  {errors.hasChronicIllness.message}
-                </p>
-              )}
+      <form onSubmit={submitForm} className="space-y-6">
 
-              <label className="intake-label">Chronic Illness Details</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="Describe your chronic illness"
-                {...register("chronicIllnessDetails")}
-              />
-
-              {errors.chronicIllnessDetails && (
-                <p className="intake-error">
-                  {errors.chronicIllnessDetails.message}
-                </p>
-              )}
-            </div>
-
-            {/* Medication */}
-            <div className="intake-form-section">
-              <label className="intake-label">
-                Do you take any medications?
-              </label>
-              <input type="checkbox" {...register("takesMedication")} />
-              {errors.takesMedication && (
-                <p className="intake-error">{errors.takesMedication.message}</p>
-              )}
-
-              <label className="intake-label">Medication Details</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="Describe your medication"
-                {...register("medicationDetails")}
-              />
-              {errors.medicationDetails && (
-                <p className="intake-error">
-                  {errors.medicationDetails.message}
-                </p>
-              )}
-            </div>
-
-            {/* Allergies */}
-            <div className="intake-form-section">
-              <label className="intake-label">Do you have allergies?</label>
-              <input type="checkbox" {...register("hasAllergies")} />
-              {errors.hasAllergies && (
-                <p className="intake-error">{errors.hasAllergies.message}</p>
-              )}
-
-              <label className="intake-label">Allergy Details</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="Describe your allergies"
-                {...register("allergyDetails")}
-              />
-              {errors.allergyDetails && (
-                <p className="intake-error">{errors.allergyDetails.message}</p>
-              )}
-            </div>
-
-            {/* Surgeries */}
-            <div className="intake-form-section">
-              <label className="intake-label">
-                Have you had any surgeries?
-              </label>
-              <input type="checkbox" {...register("hasSurgeries")} />
-              {errors.hasSurgeries && (
-                <p className="intake-error">{errors.hasSurgeries.message}</p>
-              )}
-
-              <label className="intake-label">Surgery Details</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="Describe your surgeries"
-                {...register("surgeryDetails")}
-              />
-              {errors.surgeryDetails && (
-                <p className="intake-error">{errors.surgeryDetails.message}</p>
-              )}
-            </div>
-
-            {/* Lifestyle */}
-            <div className="intake-form-section">
-              <label className="intake-label">Do you smoke?</label>
-              <input type="checkbox" {...register("smokes")} />
-              {errors.smokes && (
-                <p className="intake-error">{errors.smokes.message}</p>
-              )}
-
-              <label className="intake-label">Do you drink alcohol?</label>
-              <input type="checkbox" {...register("drinksAlcohol")} />
-              {errors.drinksAlcohol && (
-                <p className="intake-error">{errors.drinksAlcohol.message}</p>
-              )}
-
-              <label className="intake-label">Alcohol Frequency</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="How often do you drink alcohol?"
-                {...register("alcoholFrequency")}
-              />
-              {errors.alcoholFrequency && (
-                <p className="intake-error">
-                  {errors.alcoholFrequency.message}
-                </p>
-              )}
-
-              <label className="intake-label">Do you exercise regularly?</label>
-              <input type="checkbox" {...register("exercisesRegularly")} />
-              {errors.exercisesRegularly && (
-                <p className="intake-error">
-                  {errors.exercisesRegularly.message}
-                </p>
-              )}
-
-              <label className="intake-label">Exercise Frequency</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="How often do you exercise?"
-                {...register("exerciseFrequency")}
-              />
-              {errors.exerciseFrequency && (
-                <p className="intake-error">
-                  {errors.exerciseFrequency.message}
-                </p>
-              )}
-            </div>
-
-            {/* Symptoms */}
-            <div className="intake-form-section">
-              <label className="intake-label">Primary Complaint</label>
-              <input
-                type="text"
-                className="intake-input"
-                placeholder="Describe your main concern"
-                {...register("primaryComplaint")}
-              />
-              {errors.primaryComplaint && (
-                <p className="intake-error">
-                  {errors.primaryComplaint.message}
-                </p>
-              )}
-
-              <label className="intake-label">
-                When did your symptoms start?
-              </label>
-              <input
-                type="date"
-                className="intake-input"
-                {...register("symptomStart")}
-              />
-              {errors.symptomStart && (
-                <p className="intake-error">{errors.symptomStart.message}</p>
-              )}
-
-              <label className="intake-label">Symptom Severity (1–10)</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                className="intake-input"
-                {...register("symptomSeverity")}
-              />
-              {errors.symptomSeverity && (
-                <p className="intake-error">{errors.symptomSeverity.message}</p>
-              )}
-            </div>
-
-            <div className="intake-form-section">
-              <label htmlFor="additionalNotes" className="intake-label">
-                Additional Notes
-              </label>
-
-              <textarea
-                id="additionalNotes"
-                rows={4}
-                className="intake-input"
-                placeholder="Any other details you'd like to provide"
-                {...register("additionalNotes")}
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              className="intake-submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-          </form>
+        {/* PRIMARY COMPLAINT */}
+        <div>
+          <label className="font-medium block mb-1">Primary Complaint</label>
+          <input
+            type="text"
+            className="border rounded p-2 w-full"
+            value={form.primaryComplaint}
+            onChange={function (e) {
+              updateField("primaryComplaint", e.target.value);
+            }}
+          />
         </div>
-      </section>
-    </>
+
+        {/* SYMPTOM START */}
+        <div>
+          <label className="font-medium block mb-1">When did symptoms start?</label>
+          <input
+            type="date"
+            className="border rounded p-2 w-full"
+            value={form.symptomStart}
+            onChange={function (e) {
+              updateField("symptomStart", e.target.value);
+            }}
+          />
+        </div>
+
+        {/* SEVERITY */}
+        <div>
+          <label className="font-medium block mb-1">Symptom Severity (1-10)</label>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            className="border rounded p-2 w-full"
+            value={form.symptomSeverity}
+            onChange={function (e) {
+              updateField("symptomSeverity", Number(e.target.value));
+            }}
+          />
+        </div>
+
+        {/* LIFESTYLE TOGGLES */}
+        <div className="grid grid-cols-2 gap-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={form.smokes}
+              onChange={function (e) {
+                updateField("smokes", e.target.checked);
+              }}
+            />
+            <span>Smokes</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={form.drinksAlcohol}
+              onChange={function (e) {
+                updateField("drinksAlcohol", e.target.checked);
+              }}
+            />
+            <span>Drinks Alcohol</span>
+          </label>
+        </div>
+
+        {/* OPTIONAL NOTES */}
+        <div>
+          <label className="font-medium block mb-1">Additional Notes</label>
+          <textarea
+            rows={4}
+            className="border rounded p-2 w-full"
+            value={form.additionalNotes}
+            onChange={function (e) {
+              updateField("additionalNotes", e.target.value);
+            }}
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+        >
+          Submit Intake Form
+        </button>
+      </form>
+    </div>
   );
 }

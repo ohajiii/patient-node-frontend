@@ -1,15 +1,17 @@
-import { Outlet } from 'react-router-dom'
-import Navbar from '../components/Navbar/Navbar'
-import Footer from '../components/Footer/Footer'
+import { Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
 
 export default function PublicLayout() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <main>
+
+      <main className="flex-1 px-6 py-6">
         <Outlet />
       </main>
+
       <Footer />
     </div>
-  )
+  );
 }

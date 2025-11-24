@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import "./PatientNavbar.css";
 import logo from "../../assets/images/logo.svg";
 
 export default function PatientNavbar() {
   return (
-    <header className="patient-navbar">
-      <div className="patient-navbar-container">
-        <Link to="/patient/dashboard" className="patient-navbar-logo">
-          <img src={logo} alt="PatientNode logo" className="patient-navbar-logo-img" />
+    <header className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+        <Link to="/patient/dashboard">
+          <img src={logo} alt="PatientNode Logo" className="h-10 w-auto" />
         </Link>
 
-        <nav className="patient-navbar-links">
-          <Link to="/patient/dashboard">Dashboard</Link>
-          <Link to="/patient/intake-form">Intake Form</Link>
-          <Link to="/patient/cases">My Cases</Link>
-          <Link to="/patient/notifications">Notifications</Link>
-          <Link to="/logout" className="patient-navbar-logout">Logout</Link>
+        <nav className="flex space-x-6">
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/patient/dashboard">Dashboard</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/patient/intake-form">Intake Form</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/patient/case">My Case</Link>
+          <Link className="text-gray-800 font-medium hover:text-blue-600" to="/patient/notifications">Notifications</Link>
+
+          <Link className="text-blue-600 font-semibold hover:underline" to="/logout">Logout</Link>
         </nav>
       </div>
     </header>

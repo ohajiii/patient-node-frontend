@@ -14,36 +14,36 @@ export default function CaseTable(props: { cases: CaseResponseDto[] }) {
 
   return (
     <div className="overflow-x-auto mt-6">
-      <table className="w-full bg-white shadow rounded-lg border">
+      <table className="w-full bg-white shadow rounded-lg border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="text-left p-3 border-b">Case ID</th>
-            <th className="text-left p-3 border-b">Patient ID</th>
-            <th className="text-left p-3 border-b">Status</th>
-            <th className="text-left p-3 border-b">Last Updated</th>
-            <th className="text-left p-3 border-b">Actions</th>
+            <th className="text-left p-3 border-b font-medium text-gray-700">Case ID</th>
+            <th className="text-left p-3 border-b font-medium text-gray-700">Patient ID</th>
+            <th className="text-left p-3 border-b font-medium text-gray-700">Status</th>
+            <th className="text-left p-3 border-b font-medium text-gray-700">Last Updated</th>
+            <th className="text-left p-3 border-b font-medium text-gray-700">Actions</th>
           </tr>
         </thead>
 
         <tbody>
           {caseList.map(function (caseItem) {
             return (
-              <tr key={caseItem.id} className="hover:bg-gray-50">
+              <tr key={caseItem.id} className="hover:bg-gray-50 transition-colors">
+                
+                <td className="p-3 border-b text-gray-800">{caseItem.id}</td>
 
-                <td className="p-3 border-b">{caseItem.id}</td>
+                <td className="p-3 border-b text-gray-800">{caseItem.patientId}</td>
 
-                <td className="p-3 border-b">{caseItem.patientId}</td>
+                <td className="p-3 border-b text-gray-800">{caseItem.status}</td>
 
-                <td className="p-3 border-b">{caseItem.status}</td>
-
-                <td className="p-3 border-b">
+                <td className="p-3 border-b text-gray-800">
                   {new Date(caseItem.updatedAt).toLocaleDateString()}
                 </td>
 
                 <td className="p-3 border-b">
                   <Link
                     to={"/staff/cases/" + caseItem.id}
-                    className="text-blue-600 font-medium hover:underline"
+                    className="text-primary font-semibold hover:underline"
                   >
                     View Details
                   </Link>

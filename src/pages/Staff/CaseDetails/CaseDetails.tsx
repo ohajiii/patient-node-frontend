@@ -14,7 +14,10 @@ export default function CaseDetails() {
   const caseDetailsHook = useCaseDetails();
   const intakeFormHook = useIntakeForm();
 
-  const [newStatus, setNewStatus] = useState("");
+  const [newStatus, setNewStatus] = useState<
+    "OPEN" | "IN_PROGRESS" | "CLOSED" | ""
+  >("");
+
   const [newNotes, setNewNotes] = useState("");
 
   useEffect(function () {
@@ -36,7 +39,7 @@ export default function CaseDetails() {
 
   if (caseDetailsHook.loading === true || intakeFormHook.loading === true) {
     return (
-      <p className="text-center mt-8 text-gray-600">
+      <p className="text-center mt-10 text-gray-600">
         Loading case details...
       </p>
     );
@@ -44,7 +47,7 @@ export default function CaseDetails() {
 
   if (caseDetailsHook.errorMessage !== null) {
     return (
-      <p className="text-center mt-8 text-red-600">
+      <p className="text-center mt-10 text-red-600">
         {caseDetailsHook.errorMessage}
       </p>
     );
@@ -52,11 +55,13 @@ export default function CaseDetails() {
 
   if (caseDetailsHook.caseData === null) {
     return (
-      <p className="text-center mt-8 text-red-600">
+      <p className="text-center mt-10 text-red-600">
         Case not found.
       </p>
     );
   }
+
+  const caseData = caseDetailsHook.caseData;
 
   function submitStatus(event: React.FormEvent) {
     event.preventDefault();
@@ -66,9 +71,7 @@ export default function CaseDetails() {
       return;
     }
 
-    const idNumber = caseDetailsHook.caseData.id;
-    caseDetailsHook.updateStatus(idNumber, { status: newStatus });
-
+    caseDetailsHook.updateStatus(caseData.id, { status: newStatus });
     setNewStatus("");
   }
 
@@ -80,29 +83,39 @@ export default function CaseDetails() {
       return;
     }
 
-    const idNumber = caseDetailsHook.caseData.id;
-    caseDetailsHook.updateNotes(idNumber, { notes: newNotes });
-
+    caseDetailsHook.updateNotes(caseData.id, { notes: newNotes });
     setNewNotes("");
   }
 
   return (
     <div className="max-w-7xl mx-auto">
 
-      <h1 className="text-2xl font-semibold mb-6">
-        Case #{caseDetailsHook.caseData.id}
+      <h1 className="text-3xl font-bold text-primary mb-8">
+        Case #{caseData.id}
       </h1>
 
-      <CaseInfoCard caseData={caseDetailsHook.caseData} />
+      <CaseInfoCard caseData={caseData} />
 
-      <div className="bg-white shadow rounded-lg p-6 mt-6">
-        <h2 className="text-xl font-semibold mb-4">Update Status</h2>
+      <div className="bg-white shadow rounded-lg p-6 mt-8 border-l-4 border-primary">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Update Status
+        </h2>
 
         <form onSubmit={submitStatus}>
           <select
             value={newStatus}
-            onChange={function (e) { setNewStatus(e.target.value); }}
-            className="border rounded p-2 w-full mb-4"
+            onChange={function (e) {
+              const selected = e.target.value;
+              if (
+                selected === "OPEN" ||
+                selected === "IN_PROGRESS" ||
+                selected === "CLOSED" ||
+                selected === ""
+              ) {
+                setNewStatus(selected);
+              }
+            }}
+            className="border border-gray-300 rounded p-2 w-full mb-4"
           >
             <option value="">Select a status</option>
             <option value="OPEN">OPEN</option>
@@ -112,27 +125,31 @@ export default function CaseDetails() {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
           >
             Update Status
           </button>
         </form>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-6 mt-6">
-        <h2 className="text-xl font-semibold mb-4">Add / Update Notes</h2>
+      <div className="bg-white shadow rounded-lg p-6 mt-8 border-l-4 border-primary">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Add / Update Notes
+        </h2>
 
         <form onSubmit={submitNotes}>
           <textarea
             value={newNotes}
-            onChange={function (e) { setNewNotes(e.target.value); }}
+            onChange={function (e) {
+              setNewNotes(e.target.value);
+            }}
             rows={4}
-            className="border rounded p-2 w-full mb-4"
+            className="border border-gray-300 rounded p-2 w-full mb-4"
           ></textarea>
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
           >
             Save Notes
           </button>

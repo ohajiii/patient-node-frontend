@@ -3,7 +3,8 @@ import { createIntakeForm } from "../../../services/intakeFormService";
 import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 
 export default function IntakeForm() {
-
+  const patientId = 1; // dummy till use of auth
+  
   const [form, setForm] = useState({
     hasChronicIllness: false,
     chronicIllnessDetails: "",
@@ -38,9 +39,7 @@ export default function IntakeForm() {
   function submitForm(event: React.FormEvent) {
     event.preventDefault();
 
-    const request: IntakeFormRequestDto = {
-      ...form
-    };
+    const request: IntakeFormRequestDto = { ...form };
 
     createIntakeForm(request)
       .then(function () {
@@ -54,17 +53,20 @@ export default function IntakeForm() {
   return (
     <div className="max-w-3xl mx-auto">
 
-      <h1 className="text-2xl font-semibold mb-6">Patient Intake Form</h1>
+      <h1 className="text-3xl font-bold text-primary mb-8">
+        Patient Intake Form
+      </h1>
 
       {successMessage !== "" && (
-        <p className="text-green-600 mb-4">{successMessage}</p>
+        <p className="text-green-600 font-medium mb-4">{successMessage}</p>
       )}
 
-      <form onSubmit={submitForm} className="space-y-6">
-
-        {/* PRIMARY COMPLAINT */}
+      <form
+        onSubmit={submitForm}
+        className="bg-white shadow rounded-lg p-6 border-l-4 border-primary space-y-6"
+      >
         <div>
-          <label className="font-medium block mb-1">Primary Complaint</label>
+          <label className="font-medium text-gray-800 block mb-1">Primary Complaint</label>
           <input
             type="text"
             className="border rounded p-2 w-full"
@@ -75,9 +77,8 @@ export default function IntakeForm() {
           />
         </div>
 
-        {/* SYMPTOM START */}
         <div>
-          <label className="font-medium block mb-1">When did symptoms start?</label>
+          <label className="font-medium text-gray-800 block mb-1">When did symptoms start?</label>
           <input
             type="date"
             className="border rounded p-2 w-full"
@@ -88,9 +89,10 @@ export default function IntakeForm() {
           />
         </div>
 
-        {/* SEVERITY */}
         <div>
-          <label className="font-medium block mb-1">Symptom Severity (1-10)</label>
+          <label className="font-medium text-gray-800 block mb-1">
+            Symptom Severity (1-10)
+          </label>
           <input
             type="number"
             min="1"
@@ -103,9 +105,8 @@ export default function IntakeForm() {
           />
         </div>
 
-        {/* LIFESTYLE TOGGLES */}
         <div className="grid grid-cols-2 gap-4">
-          <label className="flex items-center space-x-2">
+          <label className="flex items-center space-x-2 text-gray-700">
             <input
               type="checkbox"
               checked={form.smokes}
@@ -116,7 +117,7 @@ export default function IntakeForm() {
             <span>Smokes</span>
           </label>
 
-          <label className="flex items-center space-x-2">
+          <label className="flex items-center space-x-2 text-gray-700">
             <input
               type="checkbox"
               checked={form.drinksAlcohol}
@@ -128,9 +129,8 @@ export default function IntakeForm() {
           </label>
         </div>
 
-        {/* OPTIONAL NOTES */}
         <div>
-          <label className="font-medium block mb-1">Additional Notes</label>
+          <label className="font-medium text-gray-800 block mb-1">Additional Notes</label>
           <textarea
             rows={4}
             className="border rounded p-2 w-full"
@@ -143,10 +143,11 @@ export default function IntakeForm() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          className="bg-primary text-white px-6 py-2 rounded hover:bg-primary/80"
         >
           Submit Intake Form
         </button>
+
       </form>
     </div>
   );

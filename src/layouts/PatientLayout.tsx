@@ -7,8 +7,10 @@ export default function PatientLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PatientNavbar />
 
-      <main className="flex-1 px-6 py-6">
-        <Outlet />
+      <main className="flex-1 px-6 py-10">
+        <div className="max-w-7xl mx-auto">
+          <Outlet />
+        </div>
       </main>
 
       <Footer />

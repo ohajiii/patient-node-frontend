@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import PatientNavbar from "../components/PatientNavbar/PatientNavbar";
+import PatientNavbar from "../components/Navbar/PatientNavbar";
 import Footer from "../components/Footer/Footer";
 
 export default function PatientLayout() {

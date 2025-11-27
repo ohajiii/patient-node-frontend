@@ -9,8 +9,8 @@ import Home from "./pages/Home/Home";
 import IntakeForm from "./pages/Patient/IntakeForm/IntakeForm";
 import PatientCasePage from "./pages/Patient/Case/PatientCasePage";
 
-import CaseList from "./pages/Staff/CaseList/CaseList";
-import CaseDetails from "./pages/Staff/CaseDetails/CaseDetails";
+import CaseList from "./pages/Staff/Case/CaseList";
+import CaseDetails from "./pages/Staff/Case/CaseDetails";
 
 export default function App() {
   return (

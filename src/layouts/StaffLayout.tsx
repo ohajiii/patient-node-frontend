@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import StaffNavbar from "../components/StaffNavbar/StaffNavbar";
+import StaffNavbar from "../components/Navbar/StaffNavbar";
 import Footer from "../components/Footer/Footer";
 
 export default function StaffLayout() {

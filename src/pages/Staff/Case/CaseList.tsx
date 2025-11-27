@@ -1,5 +1,5 @@
 import useCaseList from "../../../hooks/useCaseList";
-import CaseTable from "../../../components/CaseTable/CaseTable";
+import CaseTable from "../../../components/Case/CaseTable";
 
 export default function CaseList() {
   const caseListHook = useCaseList();

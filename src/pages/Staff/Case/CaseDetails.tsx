@@ -136,7 +136,7 @@ export default function CaseDetails() {
         <IntakeFormView form={intakeFormHook.intakeForm} />
       )}
 
-      <div className="mt-8">
+      <div className="mt-8 space-y-8">
 
         {treatmentPlanHook.treatmentPlan !== null ? (
           <TreatmentPlanCard plan={treatmentPlanHook.treatmentPlan} />

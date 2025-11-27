@@ -3,7 +3,6 @@ import { createIntakeForm } from "../../../services/intakeFormService";
 import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 
 export default function IntakeForm() {
-  const patientId = 1; // dummy till use of auth
   
   const [form, setForm] = useState({
     hasChronicIllness: false,

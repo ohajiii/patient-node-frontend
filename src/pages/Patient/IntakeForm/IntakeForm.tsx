@@ -6,19 +6,8 @@ import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 export default function IntakeForm() {
   const navigate = useNavigate();
   
-  const [hasChronicIllness, setHasChronicIllness] = useState(false);
-  const [chronicIllnessDetails, setChronicIllnessDetails] = useState("");
-  const [takesMedication, setTakesMedication] = useState(false);
-  const [medicationDetails, setMedicationDetails] = useState("");
-  const [hasAllergies, setHasAllergies] = useState(false);
-  const [allergyDetails, setAllergyDetails] = useState("");
-  const [hasSurgeries, setHasSurgeries] = useState(false);
-  const [surgeryDetails, setSurgeryDetails] = useState("");
   const [smokes, setSmokes] = useState(false);
   const [drinksAlcohol, setDrinksAlcohol] = useState(false);
-  const [alcoholFrequency, setAlcoholFrequency] = useState("");
-  const [exercisesRegularly, setExercisesRegularly] = useState(false);
-  const [exerciseFrequency, setExerciseFrequency] = useState("");
   const [primaryComplaint, setPrimaryComplaint] = useState("");
   const [symptomStart, setSymptomStart] = useState("");
   const [symptomSeverity, setSymptomSeverity] = useState(1);
@@ -33,19 +22,19 @@ export default function IntakeForm() {
 
     const request: IntakeFormRequestDto = {
       patientId: patientId,
-      hasChronicIllness: hasChronicIllness,
-      chronicIllnessDetails: chronicIllnessDetails,
-      takesMedication: takesMedication,
-      medicationDetails: medicationDetails,
-      hasAllergies: hasAllergies,
-      allergyDetails: allergyDetails,
-      hasSurgeries: hasSurgeries,
-      surgeryDetails: surgeryDetails,
+      hasChronicIllness: false,
+      chronicIllnessDetails: "",
+      takesMedication: false,
+      medicationDetails: "",
+      hasAllergies: false,
+      allergyDetails: "",
+      hasSurgeries: false,
+      surgeryDetails: "",
       smokes: smokes,
       drinksAlcohol: drinksAlcohol,
-      alcoholFrequency: alcoholFrequency,
-      exercisesRegularly: exercisesRegularly,
-      exerciseFrequency: exerciseFrequency,
+      alcoholFrequency: "",
+      exercisesRegularly: false,
+      exerciseFrequency: "",
       primaryComplaint: primaryComplaint,
       symptomStart: symptomStart,
       symptomSeverity: symptomSeverity,

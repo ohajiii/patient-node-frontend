@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-import useCaseDetails from "../../../hooks/useCaseDetails";
-import useIntakeForm from "../../../hooks/useIntakeForm";
-import useTreatmentPlan from "../../../hooks/useTreatmentPlan";
+import { caseService } from "../../../services/caseService";
+import { getIntakeFormById } from "../../../services/intakeFormService";
+import { getTreatmentPlanByCaseId, createTreatmentPlan, updateTreatmentPlan } from "../../../services/treatmentPlanService";
+import type { CaseResponseDto } from "../../../types/case";
+import type { IntakeFormResponseDto } from "../../../types/intakeForm";
+import type { TreatmentPlanResponseDto, TreatmentPlanRequestDto } from "../../../types/treatmentPlan";
 
 import CaseInfoCard from "../../../components/Case/CaseInfoCard";
 import IntakeFormView from "../../../components/IntakeFormView/IntakeFormView";
@@ -14,25 +16,65 @@ export default function CaseDetails() {
   const routeParams = useParams();
   const caseIdString = routeParams.caseId;
 
-  const caseDetailsHook = useCaseDetails();
-  const intakeFormHook = useIntakeForm();
-  const treatmentPlanHook = useTreatmentPlan();
+  const [caseData, setCaseData] = useState<CaseResponseDto | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [intakeForm, setIntakeForm] = useState<IntakeFormResponseDto | null>(null);
+  const [treatmentPlan, setTreatmentPlan] = useState<TreatmentPlanResponseDto | null>(null);
+  const [loadingIntakeForm, setLoadingIntakeForm] = useState(false);
+  const [loadingTreatmentPlan, setLoadingTreatmentPlan] = useState(false);
 
   const [newStatus, setNewStatus] = useState<"OPEN" | "IN_PROGRESS" | "CLOSED" | "">("");
   const [newNotes, setNewNotes] = useState("");
 
-  useEffect(() => {
+  useEffect(function() {
     if (!caseIdString) return;
     const caseIdNumber = parseInt(caseIdString);
-    caseDetailsHook.fetchCase(caseIdNumber);
+
+    setLoading(true);
+    setErrorMessage(null);
+
+    caseService.getCaseById(caseIdNumber)
+      .then(function(data) {
+        setCaseData(data);
+      })
+      .catch(function() {
+        setErrorMessage("Could not load case details.");
+        setCaseData(null);
+      })
+      .finally(function() {
+        setLoading(false);
+      });
   }, [caseIdString]);
 
-  useEffect(() => {
-    if (caseDetailsHook.caseData !== null) {
-      intakeFormHook.fetchFormById(caseDetailsHook.caseData.intakeFormId);
-      treatmentPlanHook.fetchTreatmentPlan(caseDetailsHook.caseData.id);
+  useEffect(function() {
+    if (caseData !== null) {
+      setLoadingIntakeForm(true);
+      getIntakeFormById(caseData.intakeFormId)
+        .then(function(data) {
+          setIntakeForm(data);
+        })
+        .catch(function() {
+          setIntakeForm(null);
+        })
+        .finally(function() {
+          setLoadingIntakeForm(false);
+        });
+
+      setLoadingTreatmentPlan(true);
+      getTreatmentPlanByCaseId(caseData.id)
+        .then(function(data) {
+          setTreatmentPlan(data);
+        })
+        .catch(function() {
+          setTreatmentPlan(null);
+        })
+        .finally(function() {
+          setLoadingTreatmentPlan(false);
+        });
     }
-  }, [caseDetailsHook.caseData]);
+  }, [caseData]);
 
   function submitStatus(event: React.FormEvent) {
     event.preventDefault();
@@ -40,8 +82,20 @@ export default function CaseDetails() {
       alert("Please choose a status.");
       return;
     }
-    caseDetailsHook.updateStatus(caseDetailsHook.caseData!.id, { status: newStatus });
-    setNewStatus("");
+    if (caseData === null) return;
+
+    setLoading(true);
+    caseService.updateCaseStatus(caseData.id, { status: newStatus })
+      .then(function(updatedCase) {
+        setCaseData(updatedCase);
+        setNewStatus("");
+      })
+      .catch(function() {
+        alert("Failed to update status.");
+      })
+      .finally(function() {
+        setLoading(false);
+      });
   }
 
   function submitNotes(event: React.FormEvent) {
@@ -50,35 +104,62 @@ export default function CaseDetails() {
       alert("Notes cannot be empty.");
       return;
     }
-    caseDetailsHook.updateNotes(caseDetailsHook.caseData!.id, { notes: newNotes });
-    setNewNotes("");
+    if (caseData === null) return;
+
+    setLoading(true);
+    caseService.updateCaseNotes(caseData.id, { notes: newNotes })
+      .then(function(updatedCase) {
+        setCaseData(updatedCase);
+        setNewNotes("");
+      })
+      .catch(function() {
+        alert("Failed to update notes.");
+      })
+      .finally(function() {
+        setLoading(false);
+      });
   }
 
-  function saveTreatmentPlan(payload: any, planId?: number) {
+  function saveTreatmentPlan(payload: TreatmentPlanRequestDto, planId?: number) {
+    if (caseData === null) return;
+
+    setLoadingTreatmentPlan(true);
     if (planId !== undefined) {
-      treatmentPlanHook.saveUpdatedTreatmentPlan(planId, payload);
+      updateTreatmentPlan(planId, payload)
+        .then(function(updatedPlan) {
+          setTreatmentPlan(updatedPlan);
+        })
+        .catch(function() {
+          alert("Could not update treatment plan.");
+        })
+        .finally(function() {
+          setLoadingTreatmentPlan(false);
+        });
     } else {
-      treatmentPlanHook.saveNewTreatmentPlan(payload);
+      createTreatmentPlan(payload)
+        .then(function(createdPlan) {
+          setTreatmentPlan(createdPlan);
+        })
+        .catch(function() {
+          alert("Could not create treatment plan.");
+        })
+        .finally(function() {
+          setLoadingTreatmentPlan(false);
+        });
     }
   }
 
-  if (
-    caseDetailsHook.loading ||
-    intakeFormHook.loading ||
-    treatmentPlanHook.loading
-  ) {
+  if (loading || loadingIntakeForm || loadingTreatmentPlan) {
     return <p className="text-center mt-10 text-gray-600">Loading case details...</p>;
   }
 
-  if (caseDetailsHook.errorMessage !== null) {
-    return <p className="text-center mt-10 text-red-600">{caseDetailsHook.errorMessage}</p>;
+  if (errorMessage !== null) {
+    return <p className="text-center mt-10 text-red-600">{errorMessage}</p>;
   }
 
-  if (!caseDetailsHook.caseData) {
+  if (caseData === null) {
     return <p className="text-center mt-10 text-red-600">Case not found.</p>;
   }
-
-  const caseData = caseDetailsHook.caseData;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -132,21 +213,21 @@ export default function CaseDetails() {
         </form>
       </div>
 
-      {intakeFormHook.intakeForm !== null && (
-        <IntakeFormView form={intakeFormHook.intakeForm} />
+      {intakeForm !== null && (
+        <IntakeFormView form={intakeForm} />
       )}
 
       <div className="mt-8 space-y-8">
 
-        {treatmentPlanHook.treatmentPlan !== null ? (
-          <TreatmentPlanCard plan={treatmentPlanHook.treatmentPlan} />
+        {treatmentPlan !== null ? (
+          <TreatmentPlanCard plan={treatmentPlan} />
         ) : (
           <p className="text-center text-gray-600 mb-4">No treatment plan yet.</p>
         )}
 
         <TreatmentPlanForm
           caseId={caseData.id}
-          existingPlan={treatmentPlanHook.treatmentPlan}
+          existingPlan={treatmentPlan}
           onSave={saveTreatmentPlan}
         />
 

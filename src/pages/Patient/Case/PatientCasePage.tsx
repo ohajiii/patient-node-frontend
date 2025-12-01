@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-
-import useCaseList from "../../../hooks/useCaseList";
-import useIntakeForm from "../../../hooks/useIntakeForm";
-import useTreatmentPlan from "../../../hooks/useTreatmentPlan";
+import { caseService } from "../../../services/caseService";
+import { getIntakeFormById } from "../../../services/intakeFormService";
+import { getTreatmentPlanByCaseId } from "../../../services/treatmentPlanService";
+import type { CaseResponseDto } from "../../../types/case";
+import type { IntakeFormResponseDto } from "../../../types/intakeForm";
+import type { TreatmentPlanResponseDto } from "../../../types/treatmentPlan";
 
 import IntakeFormView from "../../../components/IntakeFormView/IntakeFormView";
 import TreatmentPlanCard from "../../../components/TreatmentPlan/TreatmentPlanCard";
@@ -10,36 +12,65 @@ import TreatmentPlanCard from "../../../components/TreatmentPlan/TreatmentPlanCa
 export default function PatientCasePage() {
   const patientId = 1;
 
-  const caseListHook = useCaseList(patientId);
-  const intakeFormHook = useIntakeForm();
-  const treatmentPlanHook = useTreatmentPlan();
+  const [cases, setCases] = useState<CaseResponseDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [caseLoaded, setCaseLoaded] = useState(false);
+  const [intakeForm, setIntakeForm] = useState<IntakeFormResponseDto | null>(null);
+  const [treatmentPlan, setTreatmentPlan] = useState<TreatmentPlanResponseDto | null>(null);
 
-  useEffect(() => {
-    if (caseListHook.cases.length > 0) {
-      const caseItem = caseListHook.cases[0];
+  useEffect(function() {
+    setLoading(true);
+    setErrorMessage(null);
 
-      intakeFormHook.fetchFormById(caseItem.intakeFormId);
-      treatmentPlanHook.fetchTreatmentPlan(caseItem.id);
+    caseService.getCasesByPatientId(patientId)
+      .then(function(data) {
+        setCases(data);
+      })
+      .catch(function() {
+        setErrorMessage("Could not load cases.");
+        setCases([]);
+      })
+      .finally(function() {
+        setLoading(false);
+      });
+  }, []);
 
-      setCaseLoaded(true);
+  useEffect(function() {
+    if (cases.length > 0) {
+      const caseItem = cases[0];
+
+      getIntakeFormById(caseItem.intakeFormId)
+        .then(function(data) {
+          setIntakeForm(data);
+        })
+        .catch(function() {
+          setIntakeForm(null);
+        });
+
+      getTreatmentPlanByCaseId(caseItem.id)
+        .then(function(data) {
+          setTreatmentPlan(data);
+        })
+        .catch(function() {
+          setTreatmentPlan(null);
+        });
     }
-  }, [caseListHook.cases]);
+  }, [cases]);
 
-  if (caseListHook.loading) {
+  if (loading) {
     return <p className="text-center mt-10 text-gray-600">Loading your case...</p>;
   }
 
-  if (caseListHook.errorMessage !== null) {
-    return <p className="text-center mt-10 text-red-600">{caseListHook.errorMessage}</p>;
+  if (errorMessage !== null) {
+    return <p className="text-center mt-10 text-red-600">{errorMessage}</p>;
   }
 
-  if (caseListHook.cases.length === 0) {
+  if (cases.length === 0) {
     return <p className="text-center mt-10 text-gray-600">You have no cases yet.</p>;
   }
 
-  const caseItem = caseListHook.cases[0];
+  const caseItem = cases[0];
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -56,17 +87,15 @@ export default function PatientCasePage() {
         </div>
       </div>
 
-      {caseLoaded === true && (
-        <div className="mt-8 space-y-8">
-          {intakeFormHook.intakeForm && <IntakeFormView form={intakeFormHook.intakeForm} />}
+      <div className="mt-8 space-y-8">
+        {intakeForm !== null && <IntakeFormView form={intakeForm} />}
 
-          {treatmentPlanHook.treatmentPlan ? (
-            <TreatmentPlanCard plan={treatmentPlanHook.treatmentPlan} />
-          ) : (
-            <p className="text-center text-gray-600">No treatment plan available yet.</p>
-          )}
-        </div>
-      )}
+        {treatmentPlan !== null ? (
+          <TreatmentPlanCard plan={treatmentPlan} />
+        ) : (
+          <p className="text-center text-gray-600">No treatment plan available yet.</p>
+        )}
+      </div>
 
     </div>
   );

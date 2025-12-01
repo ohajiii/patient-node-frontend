@@ -1,10 +1,31 @@
-import useCaseList from "../../../hooks/useCaseList";
+import { useEffect, useState } from "react";
+import { caseService } from "../../../services/caseService";
+import type { CaseResponseDto } from "../../../types/case";
 import CaseTable from "../../../components/Case/CaseTable";
 
 export default function CaseList() {
-  const caseListHook = useCaseList();
+  const [cases, setCases] = useState<CaseResponseDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  if (caseListHook.loading === true) {
+  useEffect(function() {
+    setLoading(true);
+    setErrorMessage(null);
+
+    caseService.getAllCases()
+      .then(function(data) {
+        setCases(data);
+      })
+      .catch(function() {
+        setErrorMessage("Could not load cases.");
+        setCases([]);
+      })
+      .finally(function() {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading === true) {
     return (
       <p className="text-center mt-10 text-gray-600">
         Loading cases...
@@ -12,10 +33,10 @@ export default function CaseList() {
     );
   }
 
-  if (caseListHook.errorMessage !== null) {
+  if (errorMessage !== null) {
     return (
       <p className="text-center mt-10 text-red-600">
-        {caseListHook.errorMessage}
+        {errorMessage}
       </p>
     );
   }
@@ -33,7 +54,7 @@ export default function CaseList() {
         </p>
       </div>
 
-      <CaseTable cases={caseListHook.cases} />
+      <CaseTable cases={cases} />
 
     </div>
   );

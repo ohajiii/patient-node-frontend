@@ -1,20 +1,69 @@
-import { useEffect } from "react";
-import useAdminUsers from "../../../hooks/useAdminUsers";
+import { useEffect, useState } from "react";
+import { getAllUsers, updateUserRoles, deleteUser } from "../../../services/adminUserService";
+import type { AdminUserResponseDto, UpdateUserRolesRequestDto } from "../../../types/admin";
 
 export default function AdminUserListPage() {
-  const admin = useAdminUsers();
+  const [users, setUsers] = useState<AdminUserResponseDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(function () {
-    admin.fetchUsers();
+    setLoading(true);
+    setErrorMessage(null);
+
+    getAllUsers()
+      .then(function (fetchedUsers) {
+        setUsers(fetchedUsers);
+      })
+      .catch(function () {
+        setErrorMessage("Could not load users.");
+      })
+      .finally(function () {
+        setLoading(false);
+      });
   }, []);
 
-  if (admin.isLoading === true) {
+  function saveUserRoles(userId: number, updatedRoles: string[]) {
+    const payload: UpdateUserRolesRequestDto = {
+      roles: updatedRoles
+    };
+
+    updateUserRoles(userId, payload)
+      .then(function (updatedUser) {
+        const newUserList = users.map(function (existingUser) {
+          if (existingUser.id === userId) {
+            return updatedUser;
+          }
+          return existingUser;
+        });
+
+        setUsers(newUserList);
+      })
+      .catch(function () {
+        setErrorMessage("Could not update roles.");
+      });
+  }
+
+  function removeUser(userId: number) {
+    deleteUser(userId)
+      .then(function () {
+        const remainingUsers = users.filter(function (existingUser) {
+          return existingUser.id !== userId;
+        });
+        setUsers(remainingUsers);
+      })
+      .catch(function () {
+        setErrorMessage("Could not delete user.");
+      });
+  }
+
+  if (loading === true) {
     return <p className="text-center mt-10">Loading users...</p>;
   }
 
-  if (admin.errorMessage !== null) {
+  if (errorMessage !== null) {
     return (
-      <p className="text-center mt-10 text-red-600">{admin.errorMessage}</p>
+      <p className="text-center mt-10 text-red-600">{errorMessage}</p>
     );
   }
 
@@ -22,7 +71,7 @@ export default function AdminUserListPage() {
     <div className="max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold text-primary mb-8">Manage Users</h1>
 
-      {admin.users.map(function (user) {
+      {users.map(function (user) {
         const hasPatient = user.roles.includes("PATIENT");
         const hasStaff = user.roles.includes("STAFF");
         const hasAdmin = user.roles.includes("ADMIN");
@@ -38,7 +87,7 @@ export default function AdminUserListPage() {
             });
           }
 
-          admin.saveUserRoles(user.id, updated);
+          saveUserRoles(user.id, updated);
         }
 
         function toggleStaff() {
@@ -52,7 +101,7 @@ export default function AdminUserListPage() {
             });
           }
 
-          admin.saveUserRoles(user.id, updated);
+          saveUserRoles(user.id, updated);
         }
 
         function toggleAdmin() {
@@ -66,7 +115,7 @@ export default function AdminUserListPage() {
             });
           }
 
-          admin.saveUserRoles(user.id, updated);
+          saveUserRoles(user.id, updated);
         }
 
         return (
@@ -116,7 +165,7 @@ export default function AdminUserListPage() {
 
             <button
               onClick={function () {
-                admin.removeUser(user.id);
+                removeUser(user.id);
               }}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >

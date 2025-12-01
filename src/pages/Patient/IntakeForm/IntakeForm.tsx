@@ -38,7 +38,12 @@ export default function IntakeForm() {
   function submitForm(event: React.FormEvent) {
     event.preventDefault();
 
-    const request: IntakeFormRequestDto = { ...form };
+    const patientId = 1;
+
+    const request: IntakeFormRequestDto = {
+      patientId: patientId,
+      ...form
+    };
 
     createIntakeForm(request)
       .then(function () {

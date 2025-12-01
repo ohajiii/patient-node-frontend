@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { IntakeFormRequestDto, IntakeFormResponseDto } from "../types/intakeForm";
 
-const BASE_URL = import.meta.env.VITE_API_URL + "/api/patient/intake-form";
+const BASE_URL = import.meta.env.VITE_API_URL + "/api/intake-form";
 
 export async function createIntakeForm(data: IntakeFormRequestDto): Promise<IntakeFormResponseDto> {
   const response = await axios.post<IntakeFormResponseDto>(BASE_URL, data);

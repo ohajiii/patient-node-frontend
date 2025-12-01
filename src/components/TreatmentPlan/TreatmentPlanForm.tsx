@@ -62,8 +62,8 @@ export default function TreatmentPlanForm(props: {
             type="text"
             className="border rounded p-2 w-full"
             value={diagnosis}
-            onChange={function (e) {
-              setDiagnosis(e.target.value);
+            onChange={function (changeEvent) {
+              setDiagnosis(changeEvent.target.value);
             }}
           />
         </div>
@@ -74,8 +74,8 @@ export default function TreatmentPlanForm(props: {
             rows={3}
             className="border rounded p-2 w-full"
             value={planDetails}
-            onChange={function (e) {
-              setPlanDetails(e.target.value);
+            onChange={function (changeEvent) {
+              setPlanDetails(changeEvent.target.value);
             }}
           ></textarea>
         </div>
@@ -86,8 +86,8 @@ export default function TreatmentPlanForm(props: {
             type="text"
             className="border rounded p-2 w-full"
             value={medications}
-            onChange={function (e) {
-              setMedications(e.target.value);
+            onChange={function (changeEvent) {
+              setMedications(changeEvent.target.value);
             }}
           />
         </div>
@@ -98,8 +98,8 @@ export default function TreatmentPlanForm(props: {
             type="text"
             className="border rounded p-2 w-full"
             value={followUp}
-            onChange={function (e) {
-              setFollowUp(e.target.value);
+            onChange={function (changeEvent) {
+              setFollowUp(changeEvent.target.value);
             }}
           />
         </div>

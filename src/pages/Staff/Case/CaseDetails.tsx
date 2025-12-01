@@ -176,8 +176,8 @@ export default function CaseDetails() {
         <form onSubmit={submitStatus}>
           <select
             value={newStatus}
-            onChange={(e) => {
-              const selected = e.target.value;
+            onChange={function (changeEvent) {
+              const selected = changeEvent.target.value;
               if (selected === "OPEN" || selected === "IN_PROGRESS" || selected === "CLOSED" || selected === "") {
                 setNewStatus(selected);
               }
@@ -204,7 +204,9 @@ export default function CaseDetails() {
             rows={4}
             className="border border-gray-300 rounded p-2 w-full mb-4"
             value={newNotes}
-            onChange={(e) => setNewNotes(e.target.value)}
+            onChange={function (changeEvent) {
+              setNewNotes(changeEvent.target.value);
+            }}
           ></textarea>
 
           <button type="submit" className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80">

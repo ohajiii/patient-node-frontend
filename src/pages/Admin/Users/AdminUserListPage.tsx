@@ -30,13 +30,15 @@ export default function AdminUserListPage() {
 
     updateUserRoles(userId, payload)
       .then(function (updatedUser) {
-        const newUserList = users.map(function (existingUser) {
+        const newUserList = [];
+        for (let index = 0; index < users.length; index++) {
+          const existingUser = users[index];
           if (existingUser.id === userId) {
-            return updatedUser;
+            newUserList.push(updatedUser);
+          } else {
+            newUserList.push(existingUser);
           }
-          return existingUser;
-        });
-
+        }
         setUsers(newUserList);
       })
       .catch(function () {
@@ -47,9 +49,13 @@ export default function AdminUserListPage() {
   function removeUser(userId: number) {
     deleteUser(userId)
       .then(function () {
-        const remainingUsers = users.filter(function (existingUser) {
-          return existingUser.id !== userId;
-        });
+        const remainingUsers = [];
+        for (let index = 0; index < users.length; index++) {
+          const existingUser = users[index];
+          if (existingUser.id !== userId) {
+            remainingUsers.push(existingUser);
+          }
+        }
         setUsers(remainingUsers);
       })
       .catch(function () {

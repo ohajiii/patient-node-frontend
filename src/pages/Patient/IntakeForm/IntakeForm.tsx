@@ -6,36 +6,25 @@ import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 export default function IntakeForm() {
   const navigate = useNavigate();
   
-  const [form, setForm] = useState({
-    hasChronicIllness: false,
-    chronicIllnessDetails: "",
-    takesMedication: false,
-    medicationDetails: "",
-    hasAllergies: false,
-    allergyDetails: "",
-    hasSurgeries: false,
-    surgeryDetails: "",
-    smokes: false,
-    drinksAlcohol: false,
-    alcoholFrequency: "",
-    exercisesRegularly: false,
-    exerciseFrequency: "",
-    primaryComplaint: "",
-    symptomStart: "",
-    symptomSeverity: 1,
-    additionalNotes: ""
-  });
+  const [hasChronicIllness, setHasChronicIllness] = useState(false);
+  const [chronicIllnessDetails, setChronicIllnessDetails] = useState("");
+  const [takesMedication, setTakesMedication] = useState(false);
+  const [medicationDetails, setMedicationDetails] = useState("");
+  const [hasAllergies, setHasAllergies] = useState(false);
+  const [allergyDetails, setAllergyDetails] = useState("");
+  const [hasSurgeries, setHasSurgeries] = useState(false);
+  const [surgeryDetails, setSurgeryDetails] = useState("");
+  const [smokes, setSmokes] = useState(false);
+  const [drinksAlcohol, setDrinksAlcohol] = useState(false);
+  const [alcoholFrequency, setAlcoholFrequency] = useState("");
+  const [exercisesRegularly, setExercisesRegularly] = useState(false);
+  const [exerciseFrequency, setExerciseFrequency] = useState("");
+  const [primaryComplaint, setPrimaryComplaint] = useState("");
+  const [symptomStart, setSymptomStart] = useState("");
+  const [symptomSeverity, setSymptomSeverity] = useState(1);
+  const [additionalNotes, setAdditionalNotes] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
-
-  function updateField(fieldName: string, value: any) {
-    setForm(function (prev) {
-      return {
-        ...prev,
-        [fieldName]: value
-      };
-    });
-  }
 
   function submitForm(event: React.FormEvent) {
     event.preventDefault();
@@ -44,7 +33,23 @@ export default function IntakeForm() {
 
     const request: IntakeFormRequestDto = {
       patientId: patientId,
-      ...form
+      hasChronicIllness: hasChronicIllness,
+      chronicIllnessDetails: chronicIllnessDetails,
+      takesMedication: takesMedication,
+      medicationDetails: medicationDetails,
+      hasAllergies: hasAllergies,
+      allergyDetails: allergyDetails,
+      hasSurgeries: hasSurgeries,
+      surgeryDetails: surgeryDetails,
+      smokes: smokes,
+      drinksAlcohol: drinksAlcohol,
+      alcoholFrequency: alcoholFrequency,
+      exercisesRegularly: exercisesRegularly,
+      exerciseFrequency: exerciseFrequency,
+      primaryComplaint: primaryComplaint,
+      symptomStart: symptomStart,
+      symptomSeverity: symptomSeverity,
+      additionalNotes: additionalNotes
     };
 
     createIntakeForm(request)
@@ -80,9 +85,9 @@ export default function IntakeForm() {
           <input
             type="text"
             className="border rounded p-2 w-full"
-            value={form.primaryComplaint}
-            onChange={function (e) {
-              updateField("primaryComplaint", e.target.value);
+            value={primaryComplaint}
+            onChange={function (changeEvent) {
+              setPrimaryComplaint(changeEvent.target.value);
             }}
           />
         </div>
@@ -92,9 +97,9 @@ export default function IntakeForm() {
           <input
             type="date"
             className="border rounded p-2 w-full"
-            value={form.symptomStart}
-            onChange={function (e) {
-              updateField("symptomStart", e.target.value);
+            value={symptomStart}
+            onChange={function (changeEvent) {
+              setSymptomStart(changeEvent.target.value);
             }}
           />
         </div>
@@ -108,9 +113,9 @@ export default function IntakeForm() {
             min="1"
             max="10"
             className="border rounded p-2 w-full"
-            value={form.symptomSeverity}
-            onChange={function (e) {
-              updateField("symptomSeverity", Number(e.target.value));
+            value={symptomSeverity}
+            onChange={function (changeEvent) {
+              setSymptomSeverity(Number(changeEvent.target.value));
             }}
           />
         </div>
@@ -119,9 +124,9 @@ export default function IntakeForm() {
           <label className="flex items-center space-x-2 text-gray-700">
             <input
               type="checkbox"
-              checked={form.smokes}
-              onChange={function (e) {
-                updateField("smokes", e.target.checked);
+              checked={smokes}
+              onChange={function (changeEvent) {
+                setSmokes(changeEvent.target.checked);
               }}
             />
             <span>Smokes</span>
@@ -130,9 +135,9 @@ export default function IntakeForm() {
           <label className="flex items-center space-x-2 text-gray-700">
             <input
               type="checkbox"
-              checked={form.drinksAlcohol}
-              onChange={function (e) {
-                updateField("drinksAlcohol", e.target.checked);
+              checked={drinksAlcohol}
+              onChange={function (changeEvent) {
+                setDrinksAlcohol(changeEvent.target.checked);
               }}
             />
             <span>Drinks Alcohol</span>
@@ -144,9 +149,9 @@ export default function IntakeForm() {
           <textarea
             rows={4}
             className="border rounded p-2 w-full"
-            value={form.additionalNotes}
-            onChange={function (e) {
-              updateField("additionalNotes", e.target.value);
+            value={additionalNotes}
+            onChange={function (changeEvent) {
+              setAdditionalNotes(changeEvent.target.value);
             }}
           ></textarea>
         </div>

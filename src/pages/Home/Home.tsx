@@ -1,7 +1,22 @@
 import { Helmet } from 'react-helmet-async'
+import { useNavigate } from 'react-router-dom'
 import './Home.css'
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  function goToPatientSide() {
+    navigate("/patient/cases");
+  }
+
+  function goToStaffSide() {
+    navigate("/staff/cases");
+  }
+
+  function goToAdminSide() {
+    navigate("/admin/users");
+  }
+
   return (
     <>
       <Helmet>
@@ -16,8 +31,24 @@ export default function Home() {
               A secure and efficient platform for patient case management, designed to connect patients and healthcare providers seamlessly.
             </p>
             <div className="home-actions">
-              <button className="home-btn-primary">Get Started</button>
-              <button className="home-btn-secondary">Learn More</button>
+              <button 
+                className="home-btn-primary"
+                onClick={goToPatientSide}
+              >
+                Patient Side
+              </button>
+              <button 
+                className="home-btn-primary"
+                onClick={goToStaffSide}
+              >
+                Staff Side
+              </button>
+              <button 
+                className="home-btn-primary"
+                onClick={goToAdminSide}
+              >
+                Admin Side
+              </button>
             </div>
           </div>
         </div>

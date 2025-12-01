@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createIntakeForm } from "../../../services/intakeFormService";
 import type { IntakeFormRequestDto } from "../../../types/intakeForm";
 
 export default function IntakeForm() {
+  const navigate = useNavigate();
   
   const [form, setForm] = useState({
     hasChronicIllness: false,
@@ -47,7 +49,11 @@ export default function IntakeForm() {
 
     createIntakeForm(request)
       .then(function () {
-        setSuccessMessage("Your intake form has been submitted successfully.");
+        setSuccessMessage("Your intake form has been submitted successfully. Redirecting to your cases...");
+        
+        setTimeout(function() {
+          navigate("/patient/cases");
+        }, 1500);
       })
       .catch(function () {
         alert("There was a problem submitting the form. Please try again.");

@@ -8,7 +8,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home/Home";
 
 import IntakeForm from "./pages/Patient/IntakeForm/IntakeForm";
-import PatientCasePage from "./pages/Patient/Case/PatientCasePage";
+import PatientCaseList from "./pages/Patient/Case/PatientCaseList";
+import PatientCaseDetails from "./pages/Patient/Case/PatientCaseDetails";
 
 import CaseList from "./pages/Staff/Case/CaseList";
 import CaseDetails from "./pages/Staff/Case/CaseDetails";
@@ -26,7 +27,8 @@ export default function App() {
 
         <Route element={<PatientLayout />}>
           <Route path="/patient/intake-form" element={<IntakeForm />} />
-          <Route path="/patient/case" element={<PatientCasePage />} />
+          <Route path="/patient/cases" element={<PatientCaseList />} />
+          <Route path="/patient/cases/:caseId" element={<PatientCaseDetails />} />
         </Route>
 
         <Route element={<StaffLayout />}>
